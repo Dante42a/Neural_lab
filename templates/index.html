@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализ заполненности зала</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .upload-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .file-input {
+            margin: 20px 0;
+        }
+        .process-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .process-btn:hover {
+            background-color: #0056b3;
+        }
+        .process-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .result-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+        .result-image {
+            max-width: 100%;
+            max-height: 500px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .stats {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+        .error {
+            color: red;
+            margin: 10px 0;
+        }
+        .nav-links {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .nav-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 Анализ заполненности зала по стульям</h1>
+        
+        <div class="nav-links">
+            <a href="/">Главная</a>
+            <a href="/history">История</a>
+            <a href="/download_report">Скачать отчёт</a>
+        </div>
+
+        <div class="upload-section">
+            <h3>Загрузите изображение зала для анализа</h3>
+            <div class="file-input">
+                <input type="file" id="imageInput" accept="image/*">
+            </div>
+            <button class="process-btn" onclick="processImage()" id="processBtn">🚀 Запустить анализ</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <p>⏳ Обрабатываю изображение...</p>
+        </div>
+
+        <div class="error" id="error"></div>
+
+        <div class="result-section" id="resultSection" style="display: none;">
+            <h3>📊 Результаты анализа</h3>
+            <div class="stats" id="stats"></div>
+            <img id="resultImage" class="result-image" alt="Результат анализа">
+        </div>
+    </div>
+
+    <script>
+        async function processImage() {
+            const fileInput = document.getElementById('imageInput');
+            const processBtn = document.getElementById('processBtn');
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const resultSection = document.getElementById('resultSection');
+            const stats = document.getElementById('stats');
+            const resultImage = document.getElementById('resultImage');
+
+            if (!fileInput.files[0]) {
+                error.textContent = 'Пожалуйста, выберите изображение';
+                return;
+            }
+
+            // Показываем загрузку
+            loading.style.display = 'block';
+            processBtn.disabled = true;
+            error.textContent = '';
+            resultSection.style.display = 'none';
+
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/process', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Показываем результаты
+                    stats.innerHTML = `
+                        <strong>📈 Статистика:</strong><br>
+                        Обнаружено стульев: <strong>${data.chairs_detected}</strong><br>
+                        Время обработки: ${new Date(data.timestamp).toLocaleString()}
+                    `;
+                    resultImage.src = data.result_image + '?' + Date.now();
+                    resultSection.style.display = 'block';
+                } else {
+                    error.textContent = data.error || 'Произошла ошибка при обработке';
+                }
+            } catch (err) {
+                error.textContent = 'Ошибка сети: ' + err.message;
+            } finally {
+                // Скрываем загрузку
+                loading.style.display = 'none';
+                processBtn.disabled = false;
+            }
+        }
+
+        // Предварительный просмотр изображения
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.maxWidth = '300px';
+                    img.style.margin = '10px 0';
+                    
+                    const preview = document.getElementById('preview');
+                    if (preview) {
+                        preview.innerHTML = '';
+                        preview.appendChild(img);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html> 

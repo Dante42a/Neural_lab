@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 2
+names: ['Non-empty', 'empty']
+
+roboflow:
+  workspace: chokoppang
+  project: occupancy-88ek7
+  version: 6
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/chokoppang/occupancy-88ek7/dataset/6
