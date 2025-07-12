@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# MacOS
+.DS_Store
+
+# Flask/Uploads/Results
+static/uploads/
+static/results/
+history.db
+
+# Model weights
+*.pt
+*.pth
+
+# Logs
+*.log
+
+# Reports
+Отчёт_полный_проект.md
+
+# Other
+*.bak
+*.tmp 

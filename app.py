@@ -14,7 +14,9 @@ os.makedirs('static/uploads', exist_ok=True)
 os.makedirs('static/results', exist_ok=True)
 
 # Загружаем модель
+print("Загружаем модель YOLOv8...")
 model = YOLO('yolov8n.pt')
+print("Модель загружена успешно!")
 
 # Класс стула в COCO
 CHAIR_CLASS_ID = 56
