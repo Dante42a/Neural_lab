@@ -47,17 +47,24 @@ def analyze_hall_occupancy(image_path):
     if img is None:
         return None
     
-    # Детекция объектов
-    results = model(img)[0]
+    # Детекция объектов с более низким порогом уверенности
+    results = model(img, conf=0.3)[0]  # Снижаем порог с 0.5 до 0.3
     chairs = []
     people = []
     
+    # Выводим все обнаруженные объекты для отладки
+    detected_objects = []
     for box in results.boxes:
         class_id = int(box.cls)
+        confidence = float(box.conf)
+        detected_objects.append(f"Class {class_id} (conf: {confidence:.2f})")
+        
         if class_id == CHAIR_CLASS_ID:
             chairs.append(box.xyxy[0].cpu().numpy())
         elif class_id == PERSON_CLASS_ID:
             people.append(box.xyxy[0].cpu().numpy())
+    
+    print(f"Detected objects: {detected_objects}")
     
     # Определение занятых мест (простая логика: количество людей = занятые места)
     occupied_seats = len(people)
