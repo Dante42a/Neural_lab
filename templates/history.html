@@ -90,7 +90,10 @@
                 </div>
                 <div class="history-stats">
                     <strong>Файл:</strong> {{ request.filename }}<br>
-                    <strong>Обнаружено стульев:</strong> {{ request.chairs_detected }}
+                    🪑 <strong>Стульев:</strong> {{ request.chairs_detected }}<br>
+                    👥 <strong>Людей:</strong> {{ request.people_detected }}<br>
+                    🔴 <strong>Занятых мест:</strong> {{ request.occupied_seats }}<br>
+                    🟢 <strong>Свободных мест:</strong> {{ request.free_seats }}
                 </div>
                 {% if request.result_path %}
                 <div>

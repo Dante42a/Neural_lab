@@ -154,8 +154,11 @@
                     // Показываем результаты
                     stats.innerHTML = `
                         <strong>📈 Статистика:</strong><br>
-                        Обнаружено стульев: <strong>${data.chairs_detected}</strong><br>
-                        Время обработки: ${new Date(data.timestamp).toLocaleString()}
+                        🪑 Обнаружено стульев: <strong>${data.chairs_detected}</strong><br>
+                        👥 Обнаружено людей: <strong>${data.people_detected}</strong><br>
+                        🔴 Занятых мест: <strong>${data.occupied_seats}</strong><br>
+                        🟢 Свободных мест: <strong>${data.free_seats}</strong><br>
+                        ⏰ Время обработки: ${new Date(data.timestamp).toLocaleString()}
                     `;
                     resultImage.src = data.result_image + '?' + Date.now();
                     resultSection.style.display = 'block';
